@@ -5,9 +5,8 @@ let Users = require('../models/users.model')
 
 // Handle when url -> /signin 
 route.get('/', async function(req, res) {
-     // do something over here
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
-     console.log(`---> Route Hit: /auth`)
+     console.log(`---> Route Hit: ${req.originalUrl}`)
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
 
      let token

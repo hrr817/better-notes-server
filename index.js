@@ -32,9 +32,16 @@ app.use('/signup', require('./routes/signup'))
 // Route for users
 app.use('/users', require('./routes/users'))
 
+// Route for notes
+app.use('/user', require('./routes/user'))
+
 // Route for /
-app.get('/', function(req, res){
-     res.json('Server working fine...')
+app.get('/', function(req, res) {
+     console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
+     console.log(`---> Route Hit: ${req.originalUrl}`)
+     console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
+     
+     res.json("Server working fine...")
 })
 
 app.listen(port, function() {

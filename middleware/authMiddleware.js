@@ -15,14 +15,14 @@ async function authMiddleware(req, res, next) {
                userData = await users.findById(secretData.id)
                next()
           } catch(err) {
-               res.status(401).send("Invalid token")
+               res.status(401).send({message: "Invalid token", reason: "Failed to verify token"})
                console.error('Invalid Token')
                console.error(error)
           }
      }
 
      if(!token){
-          res.status(401).send("Not authorized")
+          res.status(401).send({message: "You are not authorized to access here", reason: "Access Denied"})
           console.error('not authorized Token')
      }
 }

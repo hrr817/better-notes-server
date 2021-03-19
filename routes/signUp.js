@@ -5,9 +5,8 @@ let User = require('../models/users.model')
 
 // Handle when url -> /signup 
 route.post('/', async function(req, res) {
-     // do something over here
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
-     console.log(`---> Route Hit: /signup`)
+     console.log(`---> Route Hit: ${req.originalUrl}`)
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
 
      const username = req.body.username
