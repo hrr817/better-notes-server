@@ -24,11 +24,9 @@ const userSchema = new Schema({
      gender: {
           type: String,
           maxLength: 10
-     },
+     }
 }, {
      timestamps: true
 })
 
-const User = mongoose.model('Users', userSchema, 'users')
-
-module.exports = User
+module.exports = userSchema

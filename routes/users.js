@@ -1,5 +1,5 @@
 const route = require('express').Router()
-let User = require('../models/users.model')
+let User = require('../models/user.model')
 const protect = require('../middleware/authMiddleware')
 
 // Handle when url -> /users 

@@ -1,7 +1,7 @@
 const route = require('express').Router()
 const tokenGenerator = require('jsonwebtoken')
 
-let User = require('../models/users.model')
+let User = require('../models/user.model')
 
 // Handle when url -> /signin 
 route.post('/', function(req, res) {

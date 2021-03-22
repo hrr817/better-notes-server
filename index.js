@@ -33,7 +33,7 @@ app.use('/signup', require('./routes/signup'))
 app.use('/users', require('./routes/users'))
 
 // Route for notes
-app.use('/user', require('./routes/user'))
+app.use('/notes', require('./routes/notes'))
 
 // Route for /
 app.get('/', function(req, res) {
