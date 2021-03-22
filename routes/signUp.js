@@ -1,7 +1,8 @@
 const route = require('express').Router()
 const tokenGenerator = require('jsonwebtoken')
 
-let User = require('../models/users.model')
+let User = require('../models/user.model')
+let Entry = require('../models/entry.model')
 
 // Handle when url -> /signup 
 route.post('/', async function(req, res) {
@@ -22,6 +23,8 @@ route.post('/', async function(req, res) {
           // new user
           const newUser = new User({ username, password, email, gender: '' })
           const rawData = await newUser.save()
+          const newEntry = new Entry({_id: rawData._id})
+          const entryData = await newEntry.save()
 
           const token = tokenGenerator.sign({ id: rawData._id }, process.env.AUTH_KEY, { expiresIn: '30d'})
 
@@ -29,8 +32,10 @@ route.post('/', async function(req, res) {
                id: rawData._id,
                username: rawData.username,
                email: rawData.email,
-               gender: rawData.gender
+               gender: rawData.gender,
+               notes: entryData
           }
+
           res.send({token, data: newUserData})
           console.log("User signed up success...")
           console.log(rawData)

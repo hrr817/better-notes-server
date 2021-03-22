@@ -1,7 +1,7 @@
 const route = require('express').Router()
 const jwt = require('jsonwebtoken')
 
-let Users = require('../models/users.model')
+let Users = require('../models/user.model')
 
 // Handle when url -> /signin 
 route.get('/', async function(req, res) {
