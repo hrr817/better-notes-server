@@ -69,42 +69,24 @@ route.post('/:id/update', protect, async function(req, res) {
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
 
      const noteId = req.params.id
-     const newData = req.body
-
+     const { note } = req.body
      const { authorization } = req.headers
      let token = authorization.split(' ')[1]
      const secretData = jwt.verify(token, process.env.AUTH_KEY)
 
      const userId = secretData.id
 
-     console.log(secretData)
-
      if(noteId && userId) {
-          try {
-               const { notes } = await Entry.findByIdAndUpdate(userId).exec()
+          Entry.updateOne({'notes._id': noteId}, {'$set': {
+               'notes.$.note': note
+          }}, function(err, done) {
+               if(!done) res.status(503).json({ message: 'Unable to update note', reason: 'Not found'})
 
-               const found = _.map(notes, o => {
-                    if(o._id == noteId){
-                         return {
-                              ...newData
-                         }
-                    }
-               })
-               
-
-               if(found.length) {
-                    res.json(found[0])
-               } else {
-                    res.status(404).json({ message : "No note found", reason: "Invalid note id"})
-               }
-          } catch(err) { 
-               res.status(404).json({ message : "User stash not found", reason: "Invalid user id"})
-          }
-
+               res.json(done)
+          })
      }
 })
 
-module.exports = route
 // Handle when url -> /notes 
 route.post('/create', protect, async function(req, res) {
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
@@ -119,7 +101,7 @@ route.post('/create', protect, async function(req, res) {
 
      try {
           if(note && author) {
-               const data = await Entry.findByIdAndUpdate(author.id, { "$push": { notes: [newNote] } })
+               const data = await Entry.findByIdAndUpdate(author.id, { "$push": { notes: [newNote] } }, { new: true })
                console.log(data)
                res.send(data)
           }
