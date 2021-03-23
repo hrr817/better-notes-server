@@ -19,7 +19,7 @@ route.get('/', protect, async function(req, res) {
      if(secretData.id) {
           try {
                const { notes } = await Entry.findById(secretData.id).exec()
-               console.log(notes)
+               // console.log(notes)
                res.json(notes)
           } catch(err) {
                console.log(err)

@@ -32,6 +32,9 @@ app.use('/signup', require('./routes/signup'))
 // Route for users
 app.use('/users', require('./routes/users'))
 
+// Route for user (information)
+app.use('/user', require('./routes/user'))
+
 // Route for notes
 app.use('/notes', require('./routes/notes'))
 
