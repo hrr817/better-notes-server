@@ -4,8 +4,10 @@ const users = require('../models/user.model')
 async function authMiddleware(req, res, next) {
      let token
      let userData
-
+     
      const { authorization } = req.headers
+     
+     console.log('Token: ' + authorization)
 
      if(authorization && authorization.startsWith('Bearer')){
           try {

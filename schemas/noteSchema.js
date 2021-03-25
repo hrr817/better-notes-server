@@ -15,7 +15,7 @@ const noteSchema = new Schema({
           default: false
      },
      author: {
-          type: String,
+          type: Object,
           required: true
      },
      private: {

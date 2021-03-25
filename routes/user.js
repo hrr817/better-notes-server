@@ -10,7 +10,7 @@ route.get('/:username', async function(req, res, next) {
 
      const { username } = req.params
      try {
-          const user = await User.findOne({ username }, '-password -createdAt -updatedAt -__v' ).exec()
+          const user = await User.findOne({ username }, '-password -__v' ).exec()
           if(!user){
                res.status(404).json({ message: `Could not find the person with ${username} username.`, reason: `No person in database with ${username} username`})
           }
