@@ -24,43 +24,40 @@ route.get('/', protect, async function(req, res) {
                console.log(err)
           }
      }
-
 })
 
 // Handle when url -> /notes/:id
-route.get('/:id', protect, async function(req, res) {
+route.get('/:id', async function(req, res) {
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
      console.log(`---> Route Hit: ${req.originalUrl}`)
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
 
      const noteId = req.params.id
 
-     const { authorization } = req.headers
-     let token = authorization.split(' ')[1]
-     const secretData = jwt.verify(token, process.env.AUTH_KEY)
-
-     const userId = secretData.id
-
-     if(noteId && userId) {
+     if(noteId) {
           try {
-               const { notes } = await Entry.findById(userId).exec()
+               const { notes } = await Entry.findOne({ 'notes._id': noteId })
+               const requestedNote = _.filter(notes, o => o._id == noteId)[0]
 
-               const found = _.filter(notes, o => o._id == noteId)
-
-               console.log(found)
-
-               if(found.length) {
-                    res.json(found[0])
+               if(requestedNote.private) {
+                    res.status(403).json(
+                         { message : "Author has not made the document public.", reason: "Document is private."}
+                    )
                } else {
-                    res.status(404).json({ message : "No note found", reason: "Invalid note id"})
+                    res.json(requestedNote)
                }
-          } catch(err) { 
-               res.status(404).json({ message : "User stash not found", reason: "Invalid user id"})
+
+               // if(_id == userId || !requestedNote.private) {
+               //      res.json(requestedNote)
+               // } else {
+               //      res.status(403).json(
+               //           { message : "Author has not made the document public.", reason: "Document is private."}
+               //      )
+               // }
+          } catch(err) {
+               res.status(404).json({ message : "No note found", reason: "Invalid note id"})
           }
-
-
      }
-
 })
 
 // Handle when url -> /notes/create 
@@ -113,13 +110,26 @@ route.post('/:id/update', protect, async function(req, res) {
           })
 
           try {
-               const data = await Entry.findByIdAndUpdate(userId, 
-               { '$set': newData },
-               {
-                    new: true,
-                    arrayFilters: [{ 'elem._id': noteId }]
-               })
-               res.send(data)
+               const data = await Entry.findOneAndUpdate({ '_id': userId, 'notes._id': noteId }, 
+                    { '$set': newData },
+                    {
+                         new: true,
+                         arrayFilters: [{ 'elem._id': noteId }],
+                         useFindAndModify: false
+                    }
+               )
+
+               console.log(data)
+
+               res.json(data)
+
+               // const data = await Entry.findByIdAndUpdate(userId, 
+               // { '$set': newData },
+               // {
+               //      new: true,
+               //      arrayFilters: [{ 'elem._id': noteId }]
+               // })
+               // res.send(data)
           } catch(err) {
                console.log(err)
                res.status(404).json({ message: 'Unable to update note', reason: 'Not found'})

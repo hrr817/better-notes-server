@@ -27,7 +27,7 @@ app.use('/auth', require('./routes/auth'))
 app.use('/signin', require('./routes/signIn'))
 
 // Route for signIn
-app.use('/signup', require('./routes/signup'))
+app.use('/signup', require('./routes/signUp'))
 
 // Route for users
 app.use('/users', require('./routes/users'))
