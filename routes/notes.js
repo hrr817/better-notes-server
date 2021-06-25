@@ -6,7 +6,7 @@ let Entry = require('../models/entry.model')
 let Note = require('../models/note.model');
 
 // Handle when url -> /notes 
-route.get('/', protect, async function(req, res) {
+route.get('/', protect, async function (req, res) {
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
      console.log(`---> Route Hit: ${req.originalUrl}`)
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
@@ -27,7 +27,7 @@ route.get('/', protect, async function(req, res) {
 })
 
 // Handle when url -> /notes/:id
-route.get('/:id', async function(req, res) {
+route.get('/:id',  async function(req, res) {
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
      console.log(`---> Route Hit: ${req.originalUrl}`)
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
@@ -39,21 +39,19 @@ route.get('/:id', async function(req, res) {
                const { notes } = await Entry.findOne({ 'notes._id': noteId })
                const requestedNote = _.filter(notes, o => o._id == noteId)[0]
 
-               if(requestedNote.private) {
+               const { authorization } = req.headers
+               let token = authorization.split(' ')[1] 
+               const { id } = jwt.verify(token, process.env.AUTH_KEY)
+
+               const { private, author } = requestedNote
+
+               if(private && author.id !== id) {
                     res.status(403).json(
                          { message : "Author has not made the document public.", reason: "Document is private."}
                     )
-               } else {
-                    res.json(requestedNote)
-               }
+               } 
 
-               // if(_id == userId || !requestedNote.private) {
-               //      res.json(requestedNote)
-               // } else {
-               //      res.status(403).json(
-               //           { message : "Author has not made the document public.", reason: "Document is private."}
-               //      )
-               // }
+               res.json(requestedNote)
           } catch(err) {
                res.status(404).json({ message : "No note found", reason: "Invalid note id"})
           }
@@ -138,7 +136,7 @@ route.post('/:id/update', protect, async function(req, res) {
 })
 
 // Handle when url -> /notes/:id/delete
-route.post('/:id/delete', protect, async function(req, res) {
+route.post('/:id/delete', protect, async function deleteNoteById(req, res) {
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
      console.log(`---> Route Hit: ${req.originalUrl}`)
      console.log('\x1b[33m' ,'--------------------------------------------------------------------------', '\x1b[0m')
